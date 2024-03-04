@@ -114,28 +114,6 @@ const DialogPatient: React.FC<DialogPatientProps> = ({
     }
   );
 
-  // const mutation = useMutation(
-  //   async (values: any) => {
-  //     if (eidit) {
-  //       return axios.patch(
-  //         `http://localhost:8080/patient/${values._id}`,
-  //         values
-  //       );
-  //     } else {
-  //       return axios.post("http://localhost:8080/patient", values);
-  //     }
-  //   },
-  //   {
-  //     onSuccess: async () => {
-  //       onClose(); // Close the dialog after successful creation
-  //     },
-  //     onError: (error: any) => {
-  //       console.log(error.response.data.message);
-  //       setError(error.response.data.message);
-  //     },
-  //   }
-  // );
-
   const formik = useFormik({
     initialValues: {
       _id: "",

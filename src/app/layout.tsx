@@ -19,9 +19,7 @@ export default function RootLayout({
     <ReactQueryClientProvider>
       <html lang="en">
         <body className={inter.className}>
-          {/* <ReactQueryPvorider> */}
           <MyRouter>{children}</MyRouter>
-          {/* </ReactQueryPvorider> */}
         </body>
       </html>
     </ReactQueryClientProvider>

@@ -7,6 +7,7 @@ import { Box, Button, Chip, Typography } from "@mui/material"; // import Button
 import DialogPatient from "./patient/DailogPatient";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import LongMenu from "./patient/MenuPatientTransfer";
+import DialogPatientTransfer from "./patient/DailogPatientTransfer";
 
 export default function Home() {
   const [open, setOpen] = useState(false);
@@ -35,6 +36,7 @@ export default function Home() {
 
   const onClickRowFunction = (data: any) => {
     console.log(data);
+    setOpenTransfer(true);
     setData(data);
   };
 
@@ -91,13 +93,23 @@ export default function Home() {
             dataPatient={data}
           />
         )}
+        {openTransfer && (
+          <DialogPatientTransfer
+            open={openTransfer}
+            onClose={() => {
+              setOpenTransfer(false);
+              refetch;
+            }}
+            patient={data}
+          />
+        )}
       </>
     );
   };
 
   const columns: GridColDef[] = [
     {
-      field: "index",
+      field: "no",
       headerName: "ลำดับ ",
       width: 100,
       disableColumnMenu: true,
@@ -106,7 +118,7 @@ export default function Home() {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row._id}</>;
+        return <>{row.no}</>;
       },
     },
     {
@@ -132,7 +144,7 @@ export default function Home() {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.name + row.lname}</>;
+        return <>{row.name + " " + row.lname}</>;
       },
     },
     {

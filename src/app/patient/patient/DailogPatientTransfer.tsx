@@ -1,4 +1,6 @@
 import * as React from "react";
+import { useFormik } from "formik";
+import * as yup from "yup";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
@@ -6,128 +8,171 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { Autocomplete, MenuItem, Select } from "@mui/material";
+import axios from "axios";
+import { useMutation, useQuery } from "react-query";
 
 interface DialogPatientProps {
   open: boolean;
   onClose: () => void;
+  patient: any;
 }
 
+const validationSchema = yup.object({
+  symptoms: yup.string().required("กรอกข้อมูล"),
+  clinic: yup.string().required("เลือก"),
+  doctor: yup.object().required("เลือก"),
+  walking: yup.string().required("เลือก"),
+});
+const fetchDoctors = async () => {
+  const response = await axios.get("http://localhost:8080/doctor");
+  return response.data;
+};
+
+const postqueue = async (values: any): Promise<any> => {
+  console.log(values);
+
+  try {
+    const response = await axios.post("http://localhost:8080/queue", values);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
 const DialogPatientTransfer: React.FC<DialogPatientProps> = ({
   open,
   onClose,
+  patient,
 }) => {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const formJson = Object.fromEntries(formData.entries());
-    const email = formJson.email;
-    console.log(email);
-    onClose();
-  };
+  const {
+    data: doctors = [],
+    isLoading,
+    isError,
+  } = useQuery("doctors", fetchDoctors);
+  const options = [
+    { label: "The Godfather", id: 1 },
+    { label: "Pulp Fiction", id: 2 },
+  ];
+
+  const { mutate: queue } = useMutation<any, any, any>(
+    (data: any) => postqueue(data),
+    {
+      onSuccess: () => {
+        console.log("Edit Success ID:");
+        // queryClient.invalidateQueries(["patients"]);
+      },
+    }
+  );
+  const formik = useFormik({
+    initialValues: {
+      symptoms: "",
+      clinic: "",
+      doctor: { name: "", id: "" },
+      walking: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      const paylord: any = {
+        patient: patient._id,
+        doctor: values.doctor.id,
+        clinic: values.clinic,
+        walking: values.walking,
+        symptoms: values.symptoms,
+      };
+      queue(paylord);
+
+      console.log(paylord);
+      onClose();
+    },
+  });
 
   return (
     <React.Fragment>
       <Dialog open={open} onClose={onClose}>
-        <DialogTitle>เพิ่มผู้ป่วยเข้ารับการรักษา</DialogTitle>
-        <DialogContent>
-          <DialogContentText></DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="symptoms"
-            name="symptoms"
-            label="คำนำหน้า"
-            type="text"
-            fullWidth
-            variant="standard"
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="symptoms"
-            name="symptoms"
-            label="ชื่อ"
-            type="text"
-            fullWidth
-            variant="standard"
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="treatment"
-            name="treatment"
-            label="นามสกุล"
-            type="text"
-            fullWidth
-            variant="standard"
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="medicalHistory"
-            name="medicalHistory"
-            label="อายุ"
-            type="text"
-            fullWidth
-            variant="standard"
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="address"
-            name="address"
-            label="ที่อยู่"
-            type="text"
-            fullWidth
-            variant="standard"
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="phoneNumber"
-            name="phoneNumber"
-            label="เบอร์โทร"
-            type="text"
-            fullWidth
-            variant="standard"
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="emergencyContact"
-            name="emergencyContact"
-            label="เบอร์โทรที่ติดต่อได้ฉุกเฉิน"
-            type="text"
-            fullWidth
-            variant="standard"
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="emergencyContact"
-            name="emergencyContact"
-            label="อาการ"
-            type="text"
-            fullWidth
-            variant="standard"
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="emergencyContact"
-            name="emergencyContact"
-            label="ยาที่แพ้"
-            type="text"
-            fullWidth
-            variant="standard"
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={onClose}>ยกเลิก</Button>
-          <Button type="submit" form="dialog-form">
-            บันทึก
-          </Button>
-        </DialogActions>
+        <DialogTitle>ส่งตัวผู้ป่วยเข้ารับการรักษา</DialogTitle>
+        <form id="patient-form" onSubmit={formik.handleSubmit}>
+          <DialogContent>
+            <DialogContentText></DialogContentText>
+            <Autocomplete
+              options={
+                doctors.map((doctor: any) => ({
+                  id: doctor._id,
+                  name: doctor.name,
+                })) || []
+              }
+              getOptionLabel={(option: any) => option?.name || ""}
+              value={formik.values.doctor}
+              onChange={(event, newValue) => {
+                formik.setFieldValue("doctor", newValue);
+              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  autoFocus
+                  margin="dense"
+                  id="doctor"
+                  name="doctor"
+                  label="แพทย์"
+                  fullWidth
+                  variant="standard"
+                  error={formik.touched.doctor && Boolean(formik.errors.doctor)}
+                />
+              )}
+            />
+            <Select
+              labelId="walking"
+              id="walking"
+              name="walking"
+              value={formik.values.walking}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.walking && Boolean(formik.errors.walking)}
+              fullWidth
+            >
+              <MenuItem value="">เลือก</MenuItem>
+              <MenuItem value="walking">เดิน</MenuItem>
+              <MenuItem value="lyingDown">นอน</MenuItem>
+              <MenuItem value="wheelchair">รถเข็น</MenuItem>
+            </Select>
+            <Select
+              labelId="clinic-label"
+              id="clinic"
+              name="clinic"
+              value={formik.values.clinic}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.clinic && Boolean(formik.errors.clinic)}
+              fullWidth
+            >
+              <MenuItem value="">เลือก</MenuItem>
+              <MenuItem value="walking">เดิน</MenuItem>
+              <MenuItem value="lyingDown">นอน</MenuItem>
+              <MenuItem value="wheelchair">รถเข็น</MenuItem>
+            </Select>
+
+            <TextField
+              autoFocus
+              margin="dense"
+              id="symptoms"
+              name="symptoms"
+              label="อาการ"
+              type="text"
+              multiline
+              fullWidth
+              rows={4}
+              variant="standard"
+              value={formik.values.symptoms}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              error={formik.touched.symptoms && Boolean(formik.errors.symptoms)}
+              helperText={formik.touched.symptoms && formik.errors.symptoms}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={onClose}>ยกเลิก</Button>
+            <Button type="submit">บันทึก</Button>
+          </DialogActions>
+        </form>
       </Dialog>
     </React.Fragment>
   );

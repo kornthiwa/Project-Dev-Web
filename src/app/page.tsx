@@ -13,9 +13,7 @@ export default function Home() {
   } = useQuery<any>({
     queryKey: ["todos"],
     queryFn: async () => {
-      const response = await axios.get(
-        "https://busy-gray-piglet-suit.cyclic.app/patient"
-      );
+      const response = await axios.get("http://localhost:8080/patient");
       return response.data;
     },
   });

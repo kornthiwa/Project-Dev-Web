@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
+import MyRouter from "@/module/layout/router";
+import { ReactQueryClientProvider } from "@/module/layout/ReactQueryProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,8 +16,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
-    </html>
+    <ReactQueryClientProvider>
+      <html lang="en">
+        <body className={inter.className}>
+          {/* <ReactQueryPvorider> */}
+          <MyRouter>{children}</MyRouter>
+          {/* </ReactQueryPvorider> */}
+        </body>
+      </html>
+    </ReactQueryClientProvider>
   );
 }

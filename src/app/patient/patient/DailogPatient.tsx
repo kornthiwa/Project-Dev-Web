@@ -7,16 +7,11 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Grid, InputLabel, MenuItem, Select } from "@mui/material";
-import { useFormik } from "formik";
 import * as yup from "yup";
 import { useEffect } from "react";
 import axios, { AxiosResponse } from "axios";
-// import {
-//   useMutation,
-//   UseMutationOptions,
-//   useQueryClient,
-// } from "@tanstack/react-query";
 import { useMutation, useQueryClient } from "react-query";
+import { useFormik } from "formik";
 
 interface DialogPatientProps {
   open: boolean;

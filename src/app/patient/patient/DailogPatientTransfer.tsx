@@ -49,10 +49,6 @@ const DialogPatientTransfer: React.FC<DialogPatientProps> = ({
     isLoading,
     isError,
   } = useQuery("doctors", fetchDoctors);
-  const options = [
-    { label: "The Godfather", id: 1 },
-    { label: "Pulp Fiction", id: 2 },
-  ];
 
   const { mutate: queue } = useMutation<any, any, any>(
     (data: any) => postqueue(data),
@@ -157,8 +153,8 @@ const DialogPatientTransfer: React.FC<DialogPatientProps> = ({
               name="symptoms"
               label="อาการ"
               type="text"
-              multiline
               fullWidth
+              multiline
               rows={4}
               variant="standard"
               value={formik.values.symptoms}

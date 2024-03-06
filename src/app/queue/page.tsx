@@ -1,107 +1,131 @@
 "use client";
 
 import axios from "axios";
-import { useQuery } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { useState } from "react";
-import { Box, Button, Chip, Grid, Typography } from "@mui/material"; // import Button
+import { usePathname, useRouter } from "next/navigation";
+import {
+  Autocomplete,
+  Box,
+  Button,
+  Chip,
+  Grid,
+  TextField,
+  Typography,
+} from "@mui/material"; // import Button
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import DialogPatient from "./queue/DailogPatient";
 
 export default function Home() {
   const [open, setOpen] = useState(false);
   const [openView, setOpenView] = useState(false);
   const [openEdid, setOpenEdid] = useState(false);
   const [data, setData] = useState();
-
+  const [selectedDoctor, setSelectedDoctor] = useState({ name: "", id: "" });
+  const [selectedQueue, setSelectedQueue] = useState<any>();
+  const [dataQueue, setDataQueue] = useState();
+  const [isCallingQueue, setIsCallingQueue] = useState(0); // state สำหรับการเรียกคิว
+  const [isDiagnosing, setIsDiagnosing] = useState(false); // state สำหรับการวินิจฉัยโรค
   const [openTransfer, setOpenTransfer] = useState(false);
+  const fetchDoctors = async () => {
+    const response = await axios.get("http://localhost:8080/doctor");
+    return response.data;
+  };
+  const fetchQueue = async () => {
+    if (data) {
+      const response = await axios.get(
+        `http://localhost:8080/queue/find/${data}`
+      );
+      return response.data;
+    }
+  };
+  const { data: doctors = [] } = useQuery("doctors", fetchDoctors);
 
   const {
-    data: datatesxt,
+    data: queue = [],
     isLoading,
-    isError,
     refetch,
-  } = useQuery<any>({
-    queryKey: ["patients"],
-    queryFn: async () => {
-      const response = await axios.get("http://localhost:8080/patient");
-      return response.data;
-    },
-  });
+  } = useQuery("queue", fetchQueue);
 
-  const handleClickOpen = () => {
-    setOpen(!open);
-  };
-
-  const onClickRowFunction = (data: any) => {
-    console.log(data);
-    setOpenTransfer(true);
-    setData(data);
-  };
-
-  const handleMenuItemClick = (option: string, data: any) => {
-    console.log("Option clicked:", option);
-    setData(data);
-
-    switch (option) {
-      case "ดูข้อมูล":
-        setOpenView(true);
-        break;
-      case "แก้ไขข้อมูล":
-        setOpenEdid(true);
-        break;
-      default:
-        // Handle default case
-        break;
+  const nextqueue = async (): Promise<any> => {
+    if (!data) {
+      alert("โปรดเลือกหมอ");
+      return;
     }
+    setIsCallingQueue(0);
+    setIsDiagnosing(false);
+    setTimeout(() => {
+      refetch();
+    }, 500);
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/queue/next/${data}`
+      );
+      setSelectedQueue(response.data);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+  const nextgetqueue = async (id: string): Promise<any> => {
+    try {
+      const response = await axios.get(`http://localhost:8080/queue/${id}`);
+
+      setSelectedQueue(response.data);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const onClickDoctor = async (data: any) => {
+    console.log(data.id);
+    await nextgetqueue(data.id);
+    setData(data.id);
+    setTimeout(() => {
+      refetch();
+    }, 500);
   };
 
   const renderDialog = () => {
     return (
       <>
-        {/* {open && (
+        {open && (
           <DialogPatient
             open={open}
             onClose={() => {
               setOpen(false);
+              setIsDiagnosing(false);
               refetch;
             }}
             view={false}
+            dataPatient={selectedQueue.patient}
+            onSave={() => setOpen(false)}
+            dataDoctor={data}
           />
         )}
-        {openView && (
-          <DialogPatient
-            open={openView}
-            onClose={() => {
-              setOpenView(false);
-              refetch;
-            }}
-            view={true}
-            dataPatient={data}
-          />
-        )}
-        {openEdid && (
-          <DialogPatient
-            open={openEdid}
-            onClose={() => {
-              setOpenEdid(false);
-              refetch;
-            }}
-            view={false}
-            eidit={true}
-            dataPatient={data}
-          />
-        )}
-        {openTransfer && (
-          <DialogPatientTransfer
-            open={openTransfer}
-            onClose={() => {
-              setOpenTransfer(false);
-              refetch;
-            }}
-            patient={data}
-          />
-        )} */}
       </>
     );
+  };
+
+  const onClickCallQueue = () => {
+    // โค้ดสำหรับเรียกคิว
+    if (!data) {
+      alert("โปรดเลือกหมอ");
+      return;
+    }
+    // เมื่อกดปุ่มเรียกคิวให้เปลี่ยนค่า isCallingQueue เป็น true
+    setIsCallingQueue(isCallingQueue + 1);
+  };
+
+  const onClickDiagnose = () => {
+    // โค้ดสำหรับวินิจฉัยโรค
+    if (!data) {
+      alert("โปรดเลือกหมอ");
+      return;
+    }
+    setOpen(true);
+    setIsDiagnosing(true);
   };
 
   const columns: GridColDef[] = [
@@ -222,10 +246,38 @@ export default function Home() {
       },
     },
   ];
+  console.log(selectedQueue);
+  console.log(isDiagnosing);
 
   return (
     <div>
       <Box>
+        <Autocomplete
+          options={
+            doctors.map((doctor: any) => ({
+              id: doctor._id,
+              name: doctor.name,
+            })) || []
+          }
+          getOptionLabel={(option: any) => option?.name || ""}
+          // value={formik.values.doctor}
+          onChange={(event, newValue) => {
+            onClickDoctor(newValue);
+          }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              autoFocus
+              margin="dense"
+              id="doctor"
+              name="doctor"
+              label="แพทย์"
+              fullWidth
+              variant="standard"
+            />
+          )}
+        />
+
         <Box
           display="flex"
           flexDirection="row"
@@ -235,20 +287,44 @@ export default function Home() {
           p={2} // Padding
           borderRadius={4} // Rounded corners
         >
-          <Typography variant="h5">คิวที่: {"queueNumber"}</Typography>
-          <Button variant="contained" color="primary">
+          <Typography variant="h5">
+            คิวที่: {selectedQueue?.patient?.name}
+            {selectedQueue?.queueNumber}
+            {isCallingQueue}
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={onClickCallQueue}
+          >
             เรียกคิว
           </Button>
-          <Button variant="contained" color="primary">
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={onClickDiagnose}
+            disabled={
+              selectedQueue?.status === "finished" ||
+              isDiagnosing ||
+              !selectedQueue?.patient
+                ? true
+                : false
+            } // กำหนด disabled ตามค่า isDiagnosing
+          >
+            วินิจฉัยโรค
+          </Button>
+
+          <Button variant="contained" color="primary" onClick={nextqueue}>
             คิวถัดไป
           </Button>
         </Box>
+
         <Box display="flex" justifyContent="center" mb={2}>
           <Typography variant="h5">ผู้ป่วยรอรับการรักษา</Typography>
         </Box>
         <Box>
           <DataGrid
-            rows={(!isLoading && datatesxt) || []}
+            rows={queue || []}
             columns={columns}
             getRowId={(row) => row._id}
             initialState={{
@@ -263,6 +339,7 @@ export default function Home() {
             disableColumnMenu
           />
         </Box>
+
         {renderDialog()}
       </Box>
     </div>

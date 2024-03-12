@@ -12,7 +12,6 @@ import Logout from "@mui/icons-material/Logout";
 
 export default function MenuComponent() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [user, setUser] = React.useState<any>(localStorage.getItem("user"));
 
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -22,7 +21,6 @@ export default function MenuComponent() {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  const userData = JSON.parse(user);
 
   return (
     <React.Fragment>
@@ -76,9 +74,7 @@ export default function MenuComponent() {
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         <MenuItem onClick={handleClose}>
-          <Avatar /> {userData.user.name}
-          {"  "}
-          {userData.user.lname}
+          <Avatar />
         </MenuItem>
 
         <Divider />

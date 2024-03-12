@@ -19,6 +19,13 @@ interface DialogPatientProps {
   patient: any;
 }
 
+interface FormData {
+  symptoms: string;
+  clinic: string;
+  doctor: string | { id: string };
+  walking: string;
+}
+
 const validationSchema = yup.object({
   symptoms: yup.string().required("กรอกข้อมูล"),
   clinic: yup.string().required("เลือก"),
@@ -68,10 +75,14 @@ const DialogPatientTransfer: React.FC<DialogPatientProps> = ({
       walking: "",
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
+    onSubmit: (values: FormData) => {
+      const id =
+        values.doctor && typeof values.doctor === "object"
+          ? values.doctor.id
+          : values.doctor;
       const paylord: any = {
         patient: patient._id,
-        doctor: values.doctor.id,
+        doctor: id,
         clinic: values.clinic,
         walking: values.walking,
         symptoms: values.symptoms,

@@ -9,9 +9,9 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { Grid, InputLabel, MenuItem, Select } from "@mui/material";
 import * as yup from "yup";
 import { useEffect } from "react";
-import axios, { AxiosResponse } from "axios";
 import { useMutation, useQueryClient } from "react-query";
 import { useFormik } from "formik";
+import { axiosInstance } from "@/module/axios";
 
 interface DialogPatientProps {
   open: boolean;
@@ -86,16 +86,10 @@ const DialogPatient: React.FC<DialogPatientProps> = ({
     };
     try {
       if (eidit) {
-        const response = await axios.patch(
-          `http://localhost:8080/patient/${values._id}`,
-          values
-        );
+        const response = await axiosInstance.patch(`${values._id}`, values);
         return response.data;
       } else {
-        const response = await axios.post(
-          "http://localhost:8080/patient",
-          paylord
-        );
+        const response = await axiosInstance.post("patient", paylord);
         return response.data;
       }
     } catch (error) {

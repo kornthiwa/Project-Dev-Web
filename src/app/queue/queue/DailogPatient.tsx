@@ -9,29 +9,21 @@ import DialogTitle from "@mui/material/DialogTitle";
 import {
   Checkbox,
   Collapse,
-  FormControl,
   FormControlLabel,
   FormGroup,
   Grid,
   InputAdornment,
   InputLabel,
   List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  MenuItem,
-  OutlinedInput,
-  Select,
 } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import * as yup from "yup";
 import { useEffect } from "react";
-import axios, { AxiosResponse } from "axios";
 import { useMutation, useQueryClient } from "react-query";
 import { useFormik } from "formik";
-import { StarBorder } from "@mui/icons-material";
+import { axiosInstance } from "@/module/axios";
 
 interface DialogPatientProps {
   open: boolean;
@@ -82,9 +74,10 @@ const DialogPatient: React.FC<DialogPatientProps> = ({
 
     try {
       if (menuopen) {
-        await axios.post(`http://localhost:8080/appointment`, paylord);
+        await axiosInstance.post(`appointment`, paylord);
       }
-      await axios.post("http://localhost:8080/medical", paylord);
+      await axiosInstance.post("medical", paylord);
+      await axiosInstance.post("queue/status", paylord);
     } catch (error) {
       console.error("Error updating todo list:", error);
       throw error;

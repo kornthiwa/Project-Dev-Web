@@ -32,7 +32,7 @@ const listData = [
   { text: "Home", link: "/" },
   { text: "Patient", link: "/patient" },
   { text: "Queue", link: "/queue" },
-  { text: "Aboutme", link: "/aboutme" },
+  { text: "Setting", link: "/setting" },
 ];
 
 const openedMixin = (theme: Theme): CSSObject => ({

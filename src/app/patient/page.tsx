@@ -1,34 +1,61 @@
 "use client";
 
-import axios from "axios";
 import { useQuery } from "react-query";
 import { useState } from "react";
-import { Box, Button, Chip, Typography } from "@mui/material"; // import Button
+import {
+  Autocomplete,
+  Box,
+  Button,
+  Chip,
+  Grid,
+  TextField,
+  Typography,
+} from "@mui/material"; // import Button
 import DialogPatient from "./patient/DailogPatient";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import LongMenu from "./patient/MenuPatientTransfer";
 import DialogPatientTransfer from "./patient/DailogPatientTransfer";
+import { axiosInstance } from "@/module/axios";
+import axios from "axios";
 
 export default function Home() {
   const [open, setOpen] = useState(false);
   const [openView, setOpenView] = useState(false);
   const [openEdid, setOpenEdid] = useState(false);
   const [data, setData] = useState();
+  const [filteredData, setFilteredData] = useState("");
 
   const [openTransfer, setOpenTransfer] = useState(false);
 
+  const { data: dataAPISearch } = useQuery<any>({
+    queryKey: ["patients"],
+    queryFn: async () => {
+      const response = await axiosInstance.get(`patient`);
+      return response.data;
+    },
+  });
+
   const {
-    data: datatesxt,
+    data: dataAPI,
     isLoading,
     isError,
     refetch,
   } = useQuery<any>({
-    queryKey: ["patients"],
+    queryKey: ["patients", filteredData],
     queryFn: async () => {
-      const response = await axios.get("http://localhost:8080/patient");
+      const response = await axiosInstance.get(
+        `patient/search?name=${filteredData}`
+      );
       return response.data;
     },
   });
+  const handlePatientSelect = (event: any, value: any) => {
+    if (value) {
+      console.log("Selected patient:", value);
+      setFilteredData(value.name);
+      refetch(); // ต้องเพิ่มวงเล็บนี้
+    }
+  };
 
   const handleClickOpen = () => {
     setOpen(!open);
@@ -258,11 +285,38 @@ export default function Home() {
   return (
     <div>
       <Box>
-        <Button variant="outlined" onClick={handleClickOpen}>
-          เพิ่มผู้ป่วยเข้ารับการรักษา
-        </Button>
+        <Grid
+          container
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <Button variant="contained" onClick={handleClickOpen}>
+            เพิ่มผู้ป่วยเข้ารับการรักษา
+          </Button>
+          <Autocomplete
+            disablePortal
+            options={!isLoading && dataAPISearch ? dataAPISearch : []}
+            getOptionLabel={(option) => `${option.name} ${option.lname}`}
+            renderInput={(params) => (
+              <TextField {...params} label="ค้นหาผู้ป่วย" />
+            )}
+            style={{ width: 300, marginBottom: "1rem" }}
+            onChange={handlePatientSelect}
+            onInputChange={(event, newInputValue, reason) => {
+              if (reason === "reset") {
+                console.log(newInputValue);
+
+                return;
+              } else {
+                setFilteredData("");
+              }
+            }}
+          />
+        </Grid>
+
         <DataGrid
-          rows={(!isLoading && datatesxt) || []}
+          rows={(!isLoading && dataAPI) || []}
           columns={columns}
           getRowId={(row) => row._id}
           initialState={{

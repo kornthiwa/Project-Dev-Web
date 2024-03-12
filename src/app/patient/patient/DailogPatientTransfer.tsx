@@ -9,8 +9,9 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Autocomplete, MenuItem, Select } from "@mui/material";
-import axios from "axios";
+
 import { useMutation, useQuery } from "react-query";
+import { axiosInstance } from "@/module/axios";
 
 interface DialogPatientProps {
   open: boolean;
@@ -25,7 +26,7 @@ const validationSchema = yup.object({
   walking: yup.string().required("เลือก"),
 });
 const fetchDoctors = async () => {
-  const response = await axios.get("http://localhost:8080/doctor");
+  const response = await axiosInstance.get("doctor");
   return response.data;
 };
 
@@ -33,7 +34,7 @@ const postqueue = async (values: any): Promise<any> => {
   console.log(values);
 
   try {
-    const response = await axios.post("http://localhost:8080/queue", values);
+    const response = await axiosInstance.post("queue", values);
     return response.data;
   } catch (error) {
     throw error;

@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useRouter } from "next/navigation";
+import { axiosInstance } from "@/module/axios";
 
 interface User {
   access_token: string;
@@ -28,13 +28,10 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await axios.post<User>(
-        "https://busy-gray-piglet-suit.cyclic.app/auth/login",
-        {
-          username,
-          password,
-        }
-      );
+      const response = await axiosInstance.post<User>("auth/login", {
+        username,
+        password,
+      });
 
       console.log(response);
       if (response.status === 200) {

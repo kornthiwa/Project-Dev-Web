@@ -8,7 +8,7 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { Autocomplete, MenuItem, Select } from "@mui/material";
+import { Autocomplete, InputLabel, MenuItem, Select } from "@mui/material";
 
 import { useMutation, useQuery } from "react-query";
 import { axiosInstance } from "@/module/axios";
@@ -64,7 +64,7 @@ const DialogPatientTransfer: React.FC<DialogPatientProps> = ({
     initialValues: {
       symptoms: "",
       clinic: "",
-      doctor: { name: "", id: "" },
+      doctor: "",
       walking: "",
     },
     validationSchema: validationSchema,
@@ -85,11 +85,14 @@ const DialogPatientTransfer: React.FC<DialogPatientProps> = ({
 
   return (
     <React.Fragment>
-      <Dialog open={open} onClose={onClose}>
+      <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
         <DialogTitle>ส่งตัวผู้ป่วยเข้ารับการรักษา</DialogTitle>
         <form id="patient-form" onSubmit={formik.handleSubmit}>
           <DialogContent>
             <DialogContentText></DialogContentText>
+            <InputLabel id="1" sx={{ marginBottom: "8px" }}>
+              แพทย์
+            </InputLabel>
             <Autocomplete
               options={
                 doctors.map((doctor: any) => ({
@@ -109,44 +112,49 @@ const DialogPatientTransfer: React.FC<DialogPatientProps> = ({
                   margin="dense"
                   id="doctor"
                   name="doctor"
-                  label="แพทย์"
                   fullWidth
-                  variant="standard"
                   error={formik.touched.doctor && Boolean(formik.errors.doctor)}
                 />
               )}
             />
+
+            <InputLabel id="walking" sx={{ marginBottom: "8px" }}>
+              เคลื่อนย้าย
+            </InputLabel>
             <Select
               labelId="walking"
               id="walking"
-              name="walking"
               value={formik.values.walking}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.walking && Boolean(formik.errors.walking)}
+              placeholder="เลือก"
+              onChange={(e) => formik.setFieldValue("walking", e.target.value)}
               fullWidth
+              error={formik.touched.walking && Boolean(formik.errors.walking)}
             >
-              <MenuItem value="">เลือก</MenuItem>
               <MenuItem value="walking">เดิน</MenuItem>
               <MenuItem value="lyingDown">นอน</MenuItem>
               <MenuItem value="wheelchair">รถเข็น</MenuItem>
             </Select>
+            <InputLabel id="clinic" sx={{ marginBottom: "8px" }}>
+              คลินิก
+            </InputLabel>
             <Select
-              labelId="clinic-label"
+              labelId="clinic"
               id="clinic"
               name="clinic"
               value={formik.values.clinic}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
               error={formik.touched.clinic && Boolean(formik.errors.clinic)}
               fullWidth
             >
-              <MenuItem value="">เลือก</MenuItem>
-              <MenuItem value="walking">เดิน</MenuItem>
-              <MenuItem value="lyingDown">นอน</MenuItem>
-              <MenuItem value="wheelchair">รถเข็น</MenuItem>
+              <MenuItem value="general">คลินิกทั่วไป</MenuItem>
+              <MenuItem value="pediatrics">คลินิกกุมารเวชศาสตร์</MenuItem>
+              <MenuItem value="dentistry">คลินิกทันตกรรม</MenuItem>
+              <MenuItem value="dermatology">คลินิกผิวหนัง</MenuItem>
+              <MenuItem value="ophthalmology">คลินิกตา</MenuItem>
             </Select>
-
+            <InputLabel id="symptoms" sx={{ marginBottom: "8px" }}>
+              อาการ
+            </InputLabel>
             <TextField
               autoFocus
               margin="dense"
@@ -157,10 +165,8 @@ const DialogPatientTransfer: React.FC<DialogPatientProps> = ({
               fullWidth
               multiline
               rows={4}
-              variant="standard"
               value={formik.values.symptoms}
               onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
               error={formik.touched.symptoms && Boolean(formik.errors.symptoms)}
               helperText={formik.touched.symptoms && formik.errors.symptoms}
             />

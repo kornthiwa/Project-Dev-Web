@@ -140,7 +140,7 @@ export default function Home() {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.no}</>;
+        return <>{row.queueNumber}</>;
       },
     },
     {

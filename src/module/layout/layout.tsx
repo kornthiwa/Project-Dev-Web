@@ -135,7 +135,7 @@ const Layout: FC<MyProviderProps> = ({ children }) => {
             </IconButton>
           </Box>
           <Typography variant="h6" noWrap component="div">
-            My project ToDo List
+            คลินิกการรักษา
           </Typography>
           <Box
             sx={{

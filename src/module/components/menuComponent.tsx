@@ -9,9 +9,11 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 
 import Logout from "@mui/icons-material/Logout";
+import { useRouter } from "next/navigation";
 
 export default function MenuComponent() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const router = useRouter();
 
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -22,6 +24,14 @@ export default function MenuComponent() {
     setAnchorEl(null);
   };
 
+  const handleLogout = () => {
+    // Clear localStorage data here
+    localStorage.removeItem("user");
+
+    // Close the menu
+    handleClose();
+    router.push("/login");
+  };
   return (
     <React.Fragment>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
@@ -79,7 +89,7 @@ export default function MenuComponent() {
 
         <Divider />
 
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={handleLogout}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>

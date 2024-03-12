@@ -89,7 +89,10 @@ const DialogPatient: React.FC<DialogPatientProps> = ({
     };
     try {
       if (eidit) {
-        const response = await axiosInstance.patch(`${values._id}`, values);
+        const response = await axiosInstance.patch(
+          `patient/${values._id}`,
+          values
+        );
         return response.data;
       } else {
         const response = await axiosInstance.post("patient", paylord);

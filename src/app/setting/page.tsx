@@ -44,7 +44,7 @@ const MyTabs: React.FC = () => {
         <Tab label="ข้อมูลผู้ป้วย" />
         <Tab label="ข้อมูลคิว" />
         <Tab label="ข้อมูลหมอ" />
-        <Tab label="ข้อมูลประวัติการรักษา" />
+        {/* <Tab label="ข้อมูลประวัติการรักษา" /> */}
         <Tab label="ข้อมูลการนัดหมาย" />
         <Tab label="ข้อมูลUser" />
       </Tabs>
@@ -57,13 +57,13 @@ const MyTabs: React.FC = () => {
       <TabPanel value={value} index={2}>
         <Doctor />
       </TabPanel>
-      <TabPanel value={value} index={3}>
+      {/* <TabPanel value={value} index={3}>
         <Medical />
-      </TabPanel>
-      <TabPanel value={value} index={4}>
+      </TabPanel> */}
+      <TabPanel value={value} index={3}>
         <Appointment />
       </TabPanel>
-      <TabPanel value={value} index={5}>
+      <TabPanel value={value} index={4}>
         <User />
       </TabPanel>
     </div>

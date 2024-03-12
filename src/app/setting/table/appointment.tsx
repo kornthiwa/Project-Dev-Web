@@ -14,9 +14,9 @@ const Appointment: React.FC = () => {
     isError,
     refetch,
   } = useQuery<any>({
-    queryKey: ["patients"],
+    queryKey: ["appointment"],
     queryFn: async () => {
-      const response = await axiosInstance.get(`doctor`);
+      const response = await axiosInstance.get(`appointment`);
       return response.data;
     },
   });
@@ -44,7 +44,7 @@ const Appointment: React.FC = () => {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.nametitle}</>;
+        return <>{row.patient.nametitle}</>;
       },
     },
     {
@@ -57,7 +57,7 @@ const Appointment: React.FC = () => {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.name + " " + row.lname}</>;
+        return <>{row.patient.name + " " + row.patient.lname}</>;
       },
     },
     {
@@ -70,7 +70,7 @@ const Appointment: React.FC = () => {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.age}</>;
+        return <>{row.patient.age}</>;
       },
     },
     {
@@ -83,7 +83,7 @@ const Appointment: React.FC = () => {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.gender}</>;
+        return <>{row.patient.gender}</>;
       },
     },
     {
@@ -96,7 +96,7 @@ const Appointment: React.FC = () => {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.citizenid}</>;
+        return <>{row.patient.citizenid}</>;
       },
     },
     {
@@ -109,12 +109,12 @@ const Appointment: React.FC = () => {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.phoneNumber}</>;
+        return <>{row.patient.phoneNumber}</>;
       },
     },
     {
-      field: "emergencyContact",
-      headerName: "เบอร์โทรฉุกเฉิน",
+      field: "appointmentDate",
+      headerName: "วันที่นัด",
       width: 200,
       disableColumnMenu: true,
       sortable: false,
@@ -122,7 +122,7 @@ const Appointment: React.FC = () => {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.emergencyContact}</>;
+        return <>{row.appointmentDate}</>;
       },
     },
     {
@@ -142,7 +142,7 @@ const Appointment: React.FC = () => {
     <div>
       <Autocomplete
         options={(!isLoading && dataAPI) || []}
-        getOptionLabel={(option) => option.name} // ระบุฟิลด์ที่ใช้เป็น label ใน Autocomplete
+        getOptionLabel={(option) => option.patient.name} // ระบุฟิลด์ที่ใช้เป็น label ใน Autocomplete
         value={selected}
         onChange={(event, newValue) => {
           setSelected(newValue);
@@ -152,7 +152,9 @@ const Appointment: React.FC = () => {
       <DataGrid
         rows={
           (dataAPI && selected
-            ? dataAPI.filter((row: any) => row.name === selected.name)
+            ? dataAPI.filter(
+                (row: any) => row.patient.name === selected.patient.name
+              )
             : dataAPI) || []
         }
         columns={columns}

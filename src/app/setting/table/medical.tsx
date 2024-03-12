@@ -14,9 +14,9 @@ const Medical: React.FC = () => {
     isError,
     refetch,
   } = useQuery<any>({
-    queryKey: ["patients"],
+    queryKey: ["medical"],
     queryFn: async () => {
-      const response = await axiosInstance.get(`queue`);
+      const response = await axiosInstance.get(`medical`);
       return response.data;
     },
   });

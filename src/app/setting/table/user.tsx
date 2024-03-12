@@ -14,39 +14,13 @@ const User: React.FC = () => {
     isError,
     refetch,
   } = useQuery<any>({
-    queryKey: ["patients"],
+    queryKey: ["login"],
     queryFn: async () => {
-      const response = await axiosInstance.get(`doctor`);
+      const response = await axiosInstance.get(`login`);
       return response.data;
     },
   });
   const columns: GridColDef[] = [
-    {
-      field: "no",
-      headerName: "ลำดับ ",
-      width: 100,
-      disableColumnMenu: true,
-      sortable: false,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params: any) => {
-        const { row } = params;
-        return <>{row.no}</>;
-      },
-    },
-    {
-      field: "nametitle",
-      headerName: "คำนำหน้า ",
-      width: 100,
-      disableColumnMenu: true,
-      sortable: false,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params: any) => {
-        const { row } = params;
-        return <>{row.nametitle}</>;
-      },
-    },
     {
       field: "name",
       headerName: "ชื่อ ",
@@ -61,80 +35,29 @@ const User: React.FC = () => {
       },
     },
     {
-      field: "age",
-      headerName: "อายุ",
-      width: 100,
-      disableColumnMenu: true,
-      sortable: false,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params: any) => {
-        const { row } = params;
-        return <>{row.age}</>;
-      },
-    },
-    {
-      field: "gender",
-      headerName: "เพศ",
-      width: 100,
-      disableColumnMenu: true,
-      sortable: false,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params: any) => {
-        const { row } = params;
-        return <>{row.gender}</>;
-      },
-    },
-    {
-      field: "citizenid",
-      headerName: "เลขบัตรประชาชน",
-      width: 100,
-      disableColumnMenu: true,
-      sortable: false,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params: any) => {
-        const { row } = params;
-        return <>{row.citizenid}</>;
-      },
-    },
-    {
-      field: "phoneNumber",
-      headerName: "เบอร์โทร",
+      field: "role",
+      headerName: "Role ",
       width: 200,
       disableColumnMenu: true,
       sortable: false,
-      align: "center",
+      align: "left",
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.phoneNumber}</>;
+        return <>{row.role}</>;
       },
     },
     {
-      field: "emergencyContact",
-      headerName: "เบอร์โทรฉุกเฉิน",
+      field: "createdAt",
+      headerName: "สร้างเมื่อ ",
       width: 200,
       disableColumnMenu: true,
       sortable: false,
-      align: "center",
+      align: "left",
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.emergencyContact}</>;
-      },
-    },
-    {
-      field: "status",
-      headerName: "status",
-      width: 200,
-      disableColumnMenu: true,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params: any) => {
-        const { row } = params;
-        return <>{row.status}</>;
+        return <>{row.createdAt}</>;
       },
     },
   ];

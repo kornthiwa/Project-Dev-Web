@@ -35,19 +35,6 @@ const Doctor: React.FC = () => {
       },
     },
     {
-      field: "nametitle",
-      headerName: "คำนำหน้า ",
-      width: 100,
-      disableColumnMenu: true,
-      sortable: false,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params: any) => {
-        const { row } = params;
-        return <>{row.nametitle}</>;
-      },
-    },
-    {
       field: "name",
       headerName: "ชื่อ ",
       width: 200,
@@ -60,9 +47,10 @@ const Doctor: React.FC = () => {
         return <>{row.name + " " + row.lname}</>;
       },
     },
+
     {
-      field: "age",
-      headerName: "อายุ",
+      field: "department",
+      headerName: "แผนก",
       width: 100,
       disableColumnMenu: true,
       sortable: false,
@@ -70,12 +58,12 @@ const Doctor: React.FC = () => {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.age}</>;
+        return <>{row.department}</>;
       },
     },
     {
-      field: "gender",
-      headerName: "เพศ",
+      field: "email",
+      headerName: "เมล์",
       width: 100,
       disableColumnMenu: true,
       sortable: false,
@@ -83,20 +71,20 @@ const Doctor: React.FC = () => {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.gender}</>;
+        return <>{row.email}</>;
       },
     },
     {
-      field: "citizenid",
-      headerName: "เลขบัตรประชาชน",
-      width: 100,
+      field: "position",
+      headerName: "ตำแหน่ง",
+      width: 200,
       disableColumnMenu: true,
       sortable: false,
       align: "center",
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.citizenid}</>;
+        return <>{row.position}</>;
       },
     },
     {
@@ -112,31 +100,6 @@ const Doctor: React.FC = () => {
         return <>{row.phoneNumber}</>;
       },
     },
-    {
-      field: "emergencyContact",
-      headerName: "เบอร์โทรฉุกเฉิน",
-      width: 200,
-      disableColumnMenu: true,
-      sortable: false,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params: any) => {
-        const { row } = params;
-        return <>{row.emergencyContact}</>;
-      },
-    },
-    {
-      field: "status",
-      headerName: "status",
-      width: 200,
-      disableColumnMenu: true,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params: any) => {
-        const { row } = params;
-        return <>{row.status}</>;
-      },
-    },
   ];
   return (
     <div>
@@ -147,7 +110,7 @@ const Doctor: React.FC = () => {
         onChange={(event, newValue) => {
           setSelected(newValue);
         }}
-        renderInput={(params) => <TextField {...params} label="ค้นหาผู้ป่วย" />}
+        renderInput={(params) => <TextField {...params} label="ค้นหาหมอ" />}
       />
       <DataGrid
         rows={

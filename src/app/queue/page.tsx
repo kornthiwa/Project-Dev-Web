@@ -132,7 +132,7 @@ export default function Home() {
   const columns: GridColDef[] = [
     {
       field: "no",
-      headerName: "ลำดับ ",
+      headerName: "คิว ",
       width: 100,
       disableColumnMenu: true,
       sortable: false,
@@ -153,7 +153,7 @@ export default function Home() {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.nametitle}</>;
+        return <>{row.patient.nametitle}</>;
       },
     },
     {
@@ -166,7 +166,7 @@ export default function Home() {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.name + " " + row.lname}</>;
+        return <>{row.patient.name + " " + row.patient.lastName}</>;
       },
     },
     {
@@ -179,7 +179,7 @@ export default function Home() {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.age}</>;
+        return <>{row.patient.age}</>;
       },
     },
     {
@@ -192,12 +192,12 @@ export default function Home() {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.gender}</>;
+        return <>{row.patient.gender}</>;
       },
     },
     {
-      field: "citizenid",
-      headerName: "เลขบัตรประชาชน",
+      field: "queuedAt",
+      headerName: "วันที่สร้าง",
       width: 100,
       disableColumnMenu: true,
       sortable: false,
@@ -205,12 +205,13 @@ export default function Home() {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.citizenid}</>;
+        return <>{row.queuedAt}</>;
       },
     },
+
     {
-      field: "phoneNumber",
-      headerName: "เบอร์โทร",
+      field: "walking",
+      headerName: "เคลื่อนย้าย",
       width: 200,
       disableColumnMenu: true,
       sortable: false,
@@ -218,20 +219,7 @@ export default function Home() {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.phoneNumber}</>;
-      },
-    },
-    {
-      field: "emergencyContact",
-      headerName: "เบอร์โทรฉุกเฉิน",
-      width: 200,
-      disableColumnMenu: true,
-      sortable: false,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params: any) => {
-        const { row } = params;
-        return <>{row.emergencyContact}</>;
+        return <>{row.walking}</>;
       },
     },
     {
@@ -287,8 +275,17 @@ export default function Home() {
           borderRadius={4} // Rounded corners
         >
           <Typography variant="h5">
-            คิวที่: {selectedQueue?.patient?.name}
-            {selectedQueue?.queueNumber}
+            คิวที่:
+            {selectedQueue?.queueNumber
+              ? selectedQueue.queueNumber
+              : "ไม่มีคิว"}
+          </Typography>
+          <Typography variant="h5">
+            {selectedQueue?.patient?.gender} {selectedQueue?.patient?.name}{" "}
+            {selectedQueue?.patient?.lastName}
+          </Typography>
+          <Typography variant="h5">
+            เรียกครั้งที่:
             {isCallingQueue}
           </Typography>
           <Button

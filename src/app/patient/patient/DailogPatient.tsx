@@ -35,6 +35,7 @@ interface FormValues {
   address: string;
   allergicMedicine: string;
   symptoms: string;
+  gender: string;
 }
 
 const validationSchema = yup.object({
@@ -54,6 +55,7 @@ const validationSchema = yup.object({
   race: yup.string().required("กรุณากรอกเชื้อชาติ"),
   nationality: yup.string().required("กรุณากรอกสัญชาติ"),
   address: yup.string().required("กรุณากรอกที่อยู่"),
+  gender: yup.string().required("กรุณาเลือกเพศ"),
   allergicMedicine: yup.string(),
   symptoms: yup.string(),
 });
@@ -83,6 +85,7 @@ const DialogPatient: React.FC<DialogPatientProps> = ({
       address: values.address,
       allergicMedicine: values.allergicMedicine,
       symptoms: values.symptoms,
+      gender: values.gender,
     };
     try {
       if (eidit) {
@@ -118,6 +121,7 @@ const DialogPatient: React.FC<DialogPatientProps> = ({
       phoneNumber: "",
       emergencyContact: "",
       citizenid: "",
+      gender: "",
       race: "",
       nationality: "",
       address: "",
@@ -152,6 +156,7 @@ const DialogPatient: React.FC<DialogPatientProps> = ({
         address: dataPatient ? dataPatient.address : "",
         allergicMedicine: dataPatient ? dataPatient.allergicMedicine : "",
         symptoms: dataPatient ? dataPatient.symptoms : "",
+        gender: dataPatient ? dataPatient.gender : "",
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -244,6 +249,23 @@ const DialogPatient: React.FC<DialogPatientProps> = ({
                 />
               </Grid>
               <Grid item xs={4} sx={{ padding: "0px 10px" }}>
+                <InputLabel id="prefix-label">เพศ</InputLabel>
+                <Select
+                  labelId="gender-label"
+                  id="gender"
+                  name="gender"
+                  value={formik.values.gender}
+                  onChange={formik.handleChange}
+                  error={formik.touched.gender && Boolean(formik.errors.gender)}
+                  fullWidth
+                  sx={{ marginTop: "8px" }}
+                  disabled={view} // ใส่ view จากที่คุณต้องการ
+                >
+                  <MenuItem value="ชาย">ชาย</MenuItem>
+                  <MenuItem value="หญิง">หญิง</MenuItem>
+                </Select>
+              </Grid>
+              <Grid item xs={4} sx={{ padding: "0px 10px" }}>
                 <InputLabel id="prefix-label">เบอร์โทร</InputLabel>
                 <TextField
                   autoFocus
@@ -265,7 +287,7 @@ const DialogPatient: React.FC<DialogPatientProps> = ({
                   }
                 />
               </Grid>
-              <Grid item xs={4} sx={{ padding: "0px 10px" }}>
+              <Grid item xs={3} sx={{ padding: "0px 10px" }}>
                 <InputLabel id="prefix-label">เบอร์โทรติดต่อฉุกเฉิน</InputLabel>
                 <TextField
                   autoFocus
@@ -288,14 +310,13 @@ const DialogPatient: React.FC<DialogPatientProps> = ({
                   }
                 />
               </Grid>
-              <Grid item xs={4} sx={{ padding: "0px 10px" }}>
+              <Grid item xs={3} sx={{ padding: "0px 10px" }}>
                 <InputLabel id="prefix-label">เลขบัตรประชาชน</InputLabel>
                 <TextField
                   autoFocus
                   margin="dense"
                   id="citizenid"
                   name="citizenid"
-                  label="เลขบัตรประชาชน"
                   type="text"
                   fullWidth
                   variant="outlined"
@@ -316,7 +337,7 @@ const DialogPatient: React.FC<DialogPatientProps> = ({
                   }
                 />
               </Grid>{" "}
-              <Grid item xs={4} sx={{ padding: "0px 10px" }}>
+              <Grid item xs={3} sx={{ padding: "0px 10px" }}>
                 <InputLabel id="prefix-label">เชื้อชาติ</InputLabel>
                 <TextField
                   autoFocus
@@ -333,7 +354,7 @@ const DialogPatient: React.FC<DialogPatientProps> = ({
                   helperText={formik.touched.race && formik.errors.race}
                 />
               </Grid>{" "}
-              <Grid item xs={4} sx={{ padding: "0px 10px" }}>
+              <Grid item xs={3} sx={{ padding: "0px 10px" }}>
                 <InputLabel id="prefix-label">สัญชาติ</InputLabel>
                 <TextField
                   autoFocus

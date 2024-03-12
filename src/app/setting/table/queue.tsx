@@ -14,7 +14,7 @@ const Queue: React.FC = () => {
     isError,
     refetch,
   } = useQuery<any>({
-    queryKey: ["patients"],
+    queryKey: ["queue"],
     queryFn: async () => {
       const response = await axiosInstance.get(`queue`);
       return response.data;
@@ -23,7 +23,7 @@ const Queue: React.FC = () => {
   const columns: GridColDef[] = [
     {
       field: "no",
-      headerName: "ลำดับ ",
+      headerName: "คิว ",
       width: 100,
       disableColumnMenu: true,
       sortable: false,
@@ -31,7 +31,7 @@ const Queue: React.FC = () => {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.no}</>;
+        return <>{row.queueNumber}</>;
       },
     },
     {
@@ -44,7 +44,7 @@ const Queue: React.FC = () => {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.nametitle}</>;
+        return <>{row.patient?.nametitle}</>;
       },
     },
     {
@@ -57,7 +57,7 @@ const Queue: React.FC = () => {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.name + " " + row.lname}</>;
+        return <>{row.patient?.name + " " + row.patient?.lastName}</>;
       },
     },
     {
@@ -70,7 +70,7 @@ const Queue: React.FC = () => {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.age}</>;
+        return <>{row.patient?.age}</>;
       },
     },
     {
@@ -83,12 +83,12 @@ const Queue: React.FC = () => {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.gender}</>;
+        return <>{row.patient?.gender}</>;
       },
     },
     {
-      field: "citizenid",
-      headerName: "เลขบัตรประชาชน",
+      field: "doctor",
+      headerName: "หมอ",
       width: 100,
       disableColumnMenu: true,
       sortable: false,
@@ -96,12 +96,26 @@ const Queue: React.FC = () => {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.citizenid}</>;
+        return <>{row.doctor?.name}</>;
       },
     },
     {
-      field: "phoneNumber",
-      headerName: "เบอร์โทร",
+      field: "queuedAt",
+      headerName: "วันที่สร้าง",
+      width: 100,
+      disableColumnMenu: true,
+      sortable: false,
+      align: "center",
+      headerAlign: "center",
+      renderCell: (params: any) => {
+        const { row } = params;
+        return <>{row.queuedAt}</>;
+      },
+    },
+
+    {
+      field: "walking",
+      headerName: "เคลื่อนย้าย",
       width: 200,
       disableColumnMenu: true,
       sortable: false,
@@ -109,20 +123,7 @@ const Queue: React.FC = () => {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.phoneNumber}</>;
-      },
-    },
-    {
-      field: "emergencyContact",
-      headerName: "เบอร์โทรฉุกเฉิน",
-      width: 200,
-      disableColumnMenu: true,
-      sortable: false,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params: any) => {
-        const { row } = params;
-        return <>{row.emergencyContact}</>;
+        return <>{row.walking}</>;
       },
     },
     {
@@ -142,7 +143,7 @@ const Queue: React.FC = () => {
     <div>
       <Autocomplete
         options={(!isLoading && dataAPI) || []}
-        getOptionLabel={(option) => option.name} // ระบุฟิลด์ที่ใช้เป็น label ใน Autocomplete
+        getOptionLabel={(option) => option.patient.name} // ระบุฟิลด์ที่ใช้เป็น label ใน Autocomplete
         value={selected}
         onChange={(event, newValue) => {
           setSelected(newValue);
@@ -152,7 +153,9 @@ const Queue: React.FC = () => {
       <DataGrid
         rows={
           (dataAPI && selected
-            ? dataAPI.filter((row: any) => row.name === selected.name)
+            ? dataAPI.filter(
+                (row: any) => row.patient.name === selected.patient.name
+              )
             : dataAPI) || []
         }
         columns={columns}

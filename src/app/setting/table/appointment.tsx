@@ -139,7 +139,7 @@ const Appointment: React.FC = () => {
     },
   ];
   return (
-    <div>
+    <>
       <Autocomplete
         options={(!isLoading && dataAPI) || []}
         getOptionLabel={(option) => option.patient.name} // ระบุฟิลด์ที่ใช้เป็น label ใน Autocomplete
@@ -150,6 +150,7 @@ const Appointment: React.FC = () => {
         renderInput={(params) => <TextField {...params} label="ค้นหาผู้ป่วย" />}
       />
       <DataGrid
+        sx={{ marginTop: "18px" }}
         rows={
           (dataAPI && selected
             ? dataAPI.filter(
@@ -170,7 +171,7 @@ const Appointment: React.FC = () => {
         onPaginationModelChange={(e) => console.log("Page", e)}
         disableColumnMenu
       />
-    </div>
+    </>
   );
 };
 

@@ -139,7 +139,7 @@ const Medical: React.FC = () => {
     },
   ];
   return (
-    <div>
+    <>
       <Autocomplete
         options={(!isLoading && dataAPI) || []}
         getOptionLabel={(option) => option.name} // ระบุฟิลด์ที่ใช้เป็น label ใน Autocomplete
@@ -150,6 +150,7 @@ const Medical: React.FC = () => {
         renderInput={(params) => <TextField {...params} label="ค้นหาผู้ป่วย" />}
       />
       <DataGrid
+        sx={{ marginTop: "18px" }}
         rows={
           (dataAPI && selected
             ? dataAPI.filter((row: any) => row.name === selected.name)
@@ -168,7 +169,7 @@ const Medical: React.FC = () => {
         onPaginationModelChange={(e) => console.log("Page", e)}
         disableColumnMenu
       />
-    </div>
+    </>
   );
 };
 

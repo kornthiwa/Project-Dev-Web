@@ -273,6 +273,7 @@ export default function Home() {
           bgcolor="#4CAF50" // Green background color
           p={2} // Padding
           borderRadius={4} // Rounded corners
+          sx={{ marginTop: "10px", marginBottom: "10px" }}
         >
           <Typography variant="h5">
             คิวที่:

@@ -3,10 +3,12 @@ import React, { useState } from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { axiosInstance } from "@/module/axios";
 import { useQuery } from "react-query";
-import { Autocomplete, TextField } from "@mui/material";
+import { Autocomplete, Button, Grid, TextField } from "@mui/material";
+import DialogAddDoctor from "./DialogAddDoctor";
 
 const Doctor: React.FC = () => {
   const [selected, setSelected] = useState<any>(null);
+  const [openTransfer, setOpenTransfer] = useState(false);
 
   const {
     data: dataAPI,
@@ -20,6 +22,22 @@ const Doctor: React.FC = () => {
       return response.data;
     },
   });
+
+  const renderDialog = () => {
+    return (
+      <>
+        {openTransfer && (
+          <DialogAddDoctor
+            open={openTransfer}
+            onClose={() => {
+              setOpenTransfer(false);
+              refetch;
+            }}
+          />
+        )}
+      </>
+    );
+  };
   const columns: GridColDef[] = [
     {
       field: "no",
@@ -102,17 +120,30 @@ const Doctor: React.FC = () => {
     },
   ];
   return (
-    <div>
-      <Autocomplete
-        options={(!isLoading && dataAPI) || []}
-        getOptionLabel={(option) => option.name} // ระบุฟิลด์ที่ใช้เป็น label ใน Autocomplete
-        value={selected}
-        onChange={(event, newValue) => {
-          setSelected(newValue);
-        }}
-        renderInput={(params) => <TextField {...params} label="ค้นหาหมอ" />}
-      />
+    <>
+      <Grid container direction="row">
+        <Autocomplete
+          options={(!isLoading && dataAPI) || []}
+          getOptionLabel={(option) => option.name} // ระบุฟิลด์ที่ใช้เป็น label ใน Autocomplete
+          value={selected}
+          fullWidth
+          onChange={(event, newValue) => {
+            setSelected(newValue);
+          }}
+          renderInput={(params) => <TextField {...params} label="ค้นหาหมอ" />}
+        />
+        <Button
+          variant="outlined"
+          sx={{ marginTop: "18px" }}
+          onClick={() => {
+            setOpenTransfer(true);
+          }}
+        >
+          เพิ่มข้อมูลหมอ
+        </Button>
+      </Grid>
       <DataGrid
+        sx={{ marginTop: "18px" }}
         rows={
           (dataAPI && selected
             ? dataAPI.filter((row: any) => row.name === selected.name)
@@ -131,7 +162,9 @@ const Doctor: React.FC = () => {
         onPaginationModelChange={(e) => console.log("Page", e)}
         disableColumnMenu
       />
-    </div>
+
+      {renderDialog()}
+    </>
   );
 };
 

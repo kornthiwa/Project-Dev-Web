@@ -140,7 +140,7 @@ const Queue: React.FC = () => {
     },
   ];
   return (
-    <div>
+    <>
       <Autocomplete
         options={(!isLoading && dataAPI) || []}
         getOptionLabel={(option) => option.patient.name} // ระบุฟิลด์ที่ใช้เป็น label ใน Autocomplete
@@ -151,6 +151,7 @@ const Queue: React.FC = () => {
         renderInput={(params) => <TextField {...params} label="ค้นหาผู้ป่วย" />}
       />
       <DataGrid
+        sx={{ marginTop: "18px" }}
         rows={
           (dataAPI && selected
             ? dataAPI.filter(
@@ -171,7 +172,7 @@ const Queue: React.FC = () => {
         onPaginationModelChange={(e) => console.log("Page", e)}
         disableColumnMenu
       />
-    </div>
+    </>
   );
 };
 

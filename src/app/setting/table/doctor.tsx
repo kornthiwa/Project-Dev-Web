@@ -62,7 +62,7 @@ const Doctor: React.FC = () => {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.name + " " + row.lname}</>;
+        return <>{row.name}</>;
       },
     },
 

@@ -32,6 +32,17 @@ export default function MenuComponent() {
     handleClose();
     router.push("/login");
   };
+
+  const userStr = localStorage.getItem("user");
+  let userName = "";
+  let userLName = "";
+  if (userStr) {
+    const user = JSON.parse(userStr);
+    if (user && user.user.role) {
+      userName = user.user.name;
+      userLName = user.user.lname;
+    }
+  }
   return (
     <React.Fragment>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
@@ -85,6 +96,7 @@ export default function MenuComponent() {
       >
         <MenuItem onClick={handleClose}>
           <Avatar />
+          {userName + " " + userLName}
         </MenuItem>
 
         <Divider />

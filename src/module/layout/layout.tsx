@@ -16,13 +16,13 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import AutoDeleteIcon from "@mui/icons-material/AutoDelete";
 import { FC, ReactNode } from "react";
 import Link from "next/link";
-import SaveIcon from "@mui/icons-material/Save";
 import HomeIcon from "@mui/icons-material/Home";
-import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import MenuComponent from "../components/menuComponent";
+import PersonIcon from "@mui/icons-material/Person";
+import SettingsIcon from "@mui/icons-material/Settings";
+import QueueIcon from "@mui/icons-material/Queue";
 
 interface MyProviderProps {
   children: ReactNode;
@@ -183,11 +183,11 @@ const Layout: FC<MyProviderProps> = ({ children }) => {
                     {index === 0 ? (
                       <HomeIcon />
                     ) : index === 1 ? (
-                      <SaveIcon />
+                      <PersonIcon />
                     ) : index === 2 ? (
-                      <AutoDeleteIcon />
+                      <QueueIcon />
                     ) : (
-                      <AssignmentIndIcon />
+                      <SettingsIcon />
                     )}
                   </ListItemIcon>
                   <ListItemText

@@ -7,11 +7,16 @@ import Doctor from "./table/doctor";
 import Medical from "./table/medical";
 import Appointment from "./table/appointment";
 import User from "./table/user";
+import { useRouter } from "next/navigation";
 
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
   value: number;
+}
+
+interface User {
+  access_token: string;
 }
 
 const TabPanel: React.FC<TabPanelProps> = ({ children, value, index }) => {
@@ -33,10 +38,22 @@ const TabPanel: React.FC<TabPanelProps> = ({ children, value, index }) => {
 
 const MyTabs: React.FC = () => {
   const [value, setValue] = useState<number>(0);
+  const router = useRouter();
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+  const userStr = localStorage.getItem("user");
+  let userRole = "";
+
+  if (userStr) {
+    const user = JSON.parse(userStr);
+    if (user && user.user.role) {
+      userRole = user.user.role;
+    }
+  }
+  console.log(userRole);
 
   return (
     <div>
@@ -46,7 +63,7 @@ const MyTabs: React.FC = () => {
         <Tab label="ข้อมูลหมอ" />
         {/* <Tab label="ข้อมูลประวัติการรักษา" /> */}
         <Tab label="ข้อมูลการนัดหมาย" />
-        <Tab label="ข้อมูลUser" />
+        {userRole === "ADMIN" && <Tab label="ข้อมูลUser" />}
       </Tabs>
       <TabPanel value={value} index={0}>
         <Patient />

@@ -55,7 +55,6 @@ const DialogAddUser: React.FC<DialogPatientProps> = ({ open, onClose }) => {
     (data: any) => postqueue(data),
     {
       onSuccess: () => {
-        console.log("Edit Success ID:");
         // queryClient.invalidateQueries(["patients"]);
       },
       onError: (error) => {
@@ -70,7 +69,6 @@ const DialogAddUser: React.FC<DialogPatientProps> = ({ open, onClose }) => {
     validationSchema: validationSchema,
     onSubmit: (values) => {
       queue(values);
-      console.log(values); // ทำสิ่งที่คุณต้องการเมื่อยื่นฟอร์ม
       onClose();
     },
   });

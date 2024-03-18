@@ -14,7 +14,8 @@ import { useRouter } from "next/navigation";
 export default function MenuComponent() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const router = useRouter();
-
+  const [userName, setUserName] = React.useState("");
+  const [userLName, setUserLName] = React.useState("");
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -33,16 +34,18 @@ export default function MenuComponent() {
     router.push("/login");
   };
 
-  const userStr = localStorage.getItem("user");
-  let userName = "";
-  let userLName = "";
-  if (userStr) {
-    const user = JSON.parse(userStr);
-    if (user && user.user.role) {
-      userName = user.user.name;
-      userLName = user.user.lname;
+  React.useEffect(() => {
+    const userStr = localStorage.getItem("user");
+
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      if (user && user.user.role) {
+        setUserName(user.user.name);
+        setUserLName(user.user.lname);
+      }
     }
-  }
+  }, []); // ใช้วงเล็บว่างเพื่อให้ useEffect ทำงานเฉพาะครั้งแรกเมื่อคอมโพเนนต์ถูกโหลด
+
   return (
     <React.Fragment>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>

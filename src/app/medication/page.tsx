@@ -11,12 +11,11 @@ import {
   TextField,
   Typography,
 } from "@mui/material"; // import Button
-import DialogPatient from "./patient/DailogPatient";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import LongMenu from "./patient/MenuPatientTransfer";
-import DialogPatientTransfer from "./patient/DailogPatientTransfer";
 import { axiosInstance } from "@/module/axios";
 import axios from "axios";
+import LongMenu from "../patient/patient/MenuPatientTransfer";
+import DialogPatientTransfer from "./medication/DailogPatientTransfer";
 
 export default function Home() {
   const [open, setOpen] = useState(false);
@@ -35,98 +34,46 @@ export default function Home() {
     },
   });
 
+  const [selected, setSelected] = useState<any>(null);
+
   const {
     data: dataAPI,
     isLoading,
     isError,
     refetch,
   } = useQuery<any>({
-    queryKey: ["patients", filteredData],
+    queryKey: ["medical"],
     queryFn: async () => {
-      const response = await axiosInstance.get(
-        `patient/search?name=${filteredData}`
-      );
+      const response = await axiosInstance.get(`medical`);
+      const data = response.data.reverse();
+      return data;
+    },
+  });
+  const { data: dataSearch } = useQuery<any>({
+    queryKey: ["patient"],
+    queryFn: async () => {
+      const response = await axiosInstance.get(`patient`);
       return response.data;
     },
   });
-  const handlePatientSelect = (event: any, value: any) => {
-    if (value) {
-      setFilteredData(value.name);
-      refetch(); // ต้องเพิ่มวงเล็บนี้
-    }
-  };
-
-  const handleClickOpen = () => {
-    setOpen(!open);
-  };
 
   const onClickRowFunction = (data: any) => {
     console.log(data);
-    setOpenTransfer(true);
+    setOpen(true);
     setData(data);
-  };
-
-  const handleMenuItemClick = (option: string, data: any) => {
-    console.log("Option clicked:", option);
-    setData(data);
-
-    switch (option) {
-      case "ดูข้อมูล":
-        setOpenView(true);
-        break;
-      case "แก้ไขข้อมูล":
-        setOpenEdid(true);
-        break;
-      default:
-        // Handle default case
-        break;
-    }
   };
 
   const renderDialog = () => {
     return (
       <>
         {open && (
-          <DialogPatient
+          <DialogPatientTransfer
             open={open}
+            patient={data}
             onClose={() => {
               setOpen(false);
               refetch;
             }}
-            view={false}
-          />
-        )}
-        {openView && (
-          <DialogPatient
-            open={openView}
-            onClose={() => {
-              setOpenView(false);
-              refetch;
-            }}
-            view={true}
-            dataPatient={data}
-          />
-        )}
-        {openEdid && (
-          <DialogPatient
-            open={openEdid}
-            onClose={() => {
-              setOpenEdid(false);
-              refetch;
-            }}
-            view={false}
-            eidit={true}
-            dataPatient={data}
-          />
-        )}
-        {openTransfer && (
-          <DialogPatientTransfer
-            open={openTransfer}
-            onClose={() => {
-              setOpenTransfer(false);
-              refetch;
-            }}
-            patient={data}
           />
         )}
       </>
@@ -144,7 +91,7 @@ export default function Home() {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.no}</>;
+        return <>{row.patient.no}</>;
       },
     },
     {
@@ -157,7 +104,7 @@ export default function Home() {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.nametitle}</>;
+        return <>{row.patient.nametitle}</>;
       },
     },
     {
@@ -170,7 +117,7 @@ export default function Home() {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.name + " " + row.lastName}</>;
+        return <>{row.patient.name + " " + row.patient.lastName}</>;
       },
     },
     {
@@ -183,7 +130,7 @@ export default function Home() {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.age}</>;
+        return <>{row.patient.age}</>;
       },
     },
     {
@@ -196,7 +143,7 @@ export default function Home() {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.gender}</>;
+        return <>{row.patient.gender}</>;
       },
     },
     {
@@ -209,7 +156,7 @@ export default function Home() {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.citizenid}</>;
+        return <>{row.patient.citizenid}</>;
       },
     },
     {
@@ -222,7 +169,7 @@ export default function Home() {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.phoneNumber}</>;
+        return <>{row.patient.phoneNumber}</>;
       },
     },
     {
@@ -235,7 +182,7 @@ export default function Home() {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.emergencyContact}</>;
+        return <>{row.patient.emergencyContact}</>;
       },
     },
     {
@@ -247,7 +194,7 @@ export default function Home() {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.status}</>;
+        return <>{row.patient.status}</>;
       },
     },
     {
@@ -259,23 +206,13 @@ export default function Home() {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <Button onClick={() => onClickRowFunction(row)}>ส่งตัว</Button>;
-      },
-    },
-    {
-      field: "menu",
-      headerName: "",
-      width: 10,
-      disableColumnMenu: true,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params: any) => {
-        const { row } = params;
         return (
-          <LongMenu
-            items={["ดูข้อมูล", "แก้ไขข้อมูล"]}
-            onClickItem={(option: string) => handleMenuItemClick(option, row)}
-          />
+          <Button
+            disabled={row.status !== "successful"}
+            onClick={() => onClickRowFunction(row)}
+          >
+            ส่งตัว
+          </Button>
         );
       },
     },
@@ -284,36 +221,24 @@ export default function Home() {
   return (
     <div>
       <Box>
-        <Grid
-          container
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <Button variant="contained" onClick={handleClickOpen}>
-            เพิ่มผู้ป่วยเข้ารับการรักษา
-          </Button>
-          <Autocomplete
-            disablePortal
-            options={!isLoading && dataAPISearch ? dataAPISearch : []}
-            getOptionLabel={(option) => `${option.name} ${option.lname}`}
-            renderInput={(params) => (
-              <TextField {...params} label="ค้นหาผู้ป่วย" />
-            )}
-            style={{ width: 300, marginBottom: "1rem" }}
-            onChange={handlePatientSelect}
-            onInputChange={(event, newInputValue, reason) => {
-              if (reason === "reset") {
-                return;
-              } else {
-                setFilteredData("");
-              }
-            }}
-          />
-        </Grid>
-
+        <Autocomplete
+          options={(!isLoading && dataSearch) || []}
+          getOptionLabel={(option) => option.name} // ระบุฟิลด์ที่ใช้เป็น label ใน Autocomplete
+          value={selected}
+          onChange={(event, newValue) => {
+            setSelected(newValue);
+          }}
+          renderInput={(params) => (
+            <TextField {...params} label="ค้นหาผู้ป่วย" />
+          )}
+        />
         <DataGrid
-          rows={(!isLoading && dataAPI) || []}
+          sx={{ marginTop: "18px" }}
+          rows={
+            (dataAPI && selected
+              ? dataAPI.filter((row: any) => row.patient.name === selected.name)
+              : dataAPI) || [] // กลับด้านข้อมูลก่อนที่จะนำมาใช้
+          }
           columns={columns}
           getRowId={(row) => row._id}
           initialState={{
@@ -327,6 +252,7 @@ export default function Home() {
           onPaginationModelChange={(e) => console.log("Page", e)}
           disableColumnMenu
         />
+
         {renderDialog()}
       </Box>
     </div>

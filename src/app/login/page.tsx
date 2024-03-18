@@ -33,7 +33,6 @@ export default function LoginPage() {
         password,
       });
 
-      console.log(response);
       if (response.status === 200) {
         localStorage.setItem("user", JSON.stringify(response.data));
 

@@ -62,7 +62,6 @@ const DialogPatientTransfer: React.FC<DialogPatientProps> = ({
     (data: any) => postqueue(data),
     {
       onSuccess: () => {
-        console.log("Edit Success ID:");
         // queryClient.invalidateQueries(["patients"]);
       },
     }
@@ -89,7 +88,6 @@ const DialogPatientTransfer: React.FC<DialogPatientProps> = ({
       };
       queue(paylord);
 
-      console.log(paylord);
       onClose();
     },
   });

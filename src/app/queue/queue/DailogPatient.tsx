@@ -42,6 +42,7 @@ const validationSchema = yup.object({
   bloodPressure: yup.string().required("กรุณากรอกความดันโลหิต"),
   treatmentDetails: yup.string().required("กรุณากรอกรายละเอียดการรักษา"),
   diagnosis: yup.string().required("กรุณากรอกผลการตรวจวินิจฉัย"),
+  prescription: yup.string().required("กรุณากรอกสั่งยา"),
 });
 
 const DialogPatient: React.FC<DialogPatientProps> = ({
@@ -70,6 +71,7 @@ const DialogPatient: React.FC<DialogPatientProps> = ({
       treatmentDetails: values.treatmentDetails,
       diagnosis: values.diagnosis,
       appointmentDate: values.appointmentDate,
+      prescription: values.prescription,
     };
 
     try {
@@ -77,7 +79,7 @@ const DialogPatient: React.FC<DialogPatientProps> = ({
         await axiosInstance.post(`appointment`, paylord);
       }
       await axiosInstance.post("medical", paylord);
-      await axiosInstance.post("queue/status", paylord);
+      await axiosInstance.post("queue/status", dataPatient);
     } catch (error) {
       console.error("Error updating todo list:", error);
       throw error;
@@ -88,7 +90,6 @@ const DialogPatient: React.FC<DialogPatientProps> = ({
     (data: any) => addTemperature(data),
     {
       onSuccess: () => {
-        console.log("Edit Success ID:");
         queryClient.invalidateQueries(["patients"]);
       },
     }
@@ -97,7 +98,7 @@ const DialogPatient: React.FC<DialogPatientProps> = ({
   const formik = useFormik({
     initialValues: {
       doctor: dataDoctor,
-      patient: dataPatient,
+      patient: dataPatient.patient,
       bodyTemperature: "",
       weight: "",
       height: "",
@@ -105,18 +106,15 @@ const DialogPatient: React.FC<DialogPatientProps> = ({
       treatmentDetails: "",
       diagnosis: "",
       appointmentDate: new Date(),
+      prescription: "",
     },
 
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
-        console.log(values);
-        console.log(dataPatient);
         await addDataTemperature(values);
         onSave();
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     },
   });
 
@@ -124,10 +122,6 @@ const DialogPatient: React.FC<DialogPatientProps> = ({
     setSelectedDate(date);
     formik.setFieldValue("appointmentDate", date);
   };
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataPatient]);
 
   return (
     <React.Fragment>
@@ -300,6 +294,29 @@ const DialogPatient: React.FC<DialogPatientProps> = ({
                   }
                   helperText={
                     formik.touched.diagnosis && formik.errors.diagnosis
+                  }
+                />
+              </Grid>
+              <Grid item xs={12} sx={{ padding: "0px 10px" }}>
+                <InputLabel id="prefix-label">การสั่งยา</InputLabel>
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  id="prescription"
+                  name="prescription"
+                  type="text"
+                  fullWidth
+                  variant="outlined"
+                  multiline
+                  rows={4}
+                  value={formik.values.prescription}
+                  onChange={formik.handleChange}
+                  error={
+                    formik.touched.prescription &&
+                    Boolean(formik.errors.prescription)
+                  }
+                  helperText={
+                    formik.touched.prescription && formik.errors.prescription
                   }
                 />
               </Grid>

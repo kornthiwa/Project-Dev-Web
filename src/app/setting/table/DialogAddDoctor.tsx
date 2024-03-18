@@ -46,7 +46,6 @@ const DialogAddDoctor: React.FC<DialogPatientProps> = ({ open, onClose }) => {
     (data: any) => postqueue(data),
     {
       onSuccess: () => {
-        console.log("Edit Success ID:");
         // queryClient.invalidateQueries(["patients"]);
       },
     }
@@ -67,7 +66,6 @@ const DialogAddDoctor: React.FC<DialogPatientProps> = ({ open, onClose }) => {
     validationSchema: validationSchema, // Use validation schema
     onSubmit: (values) => {
       queue(values);
-      console.log(values);
       onClose();
     },
   });

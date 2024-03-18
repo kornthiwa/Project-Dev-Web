@@ -108,7 +108,6 @@ const DialogPatient: React.FC<DialogPatientProps> = ({
     (data: FormValues) => editData(data),
     {
       onSuccess: () => {
-        console.log("Edit Success ID:");
         queryClient.invalidateQueries(["patients"]);
       },
     }
@@ -137,9 +136,7 @@ const DialogPatient: React.FC<DialogPatientProps> = ({
       try {
         await editPatients(values);
         onClose();
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) {}
     },
   });
 

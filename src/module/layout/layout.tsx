@@ -23,6 +23,7 @@ import MenuComponent from "../components/menuComponent";
 import PersonIcon from "@mui/icons-material/Person";
 import SettingsIcon from "@mui/icons-material/Settings";
 import QueueIcon from "@mui/icons-material/Queue";
+import MedicationIcon from "@mui/icons-material/Medication";
 
 interface MyProviderProps {
   children: ReactNode;
@@ -32,6 +33,8 @@ const listData = [
   { text: "Home", link: "/" },
   { text: "Patient", link: "/patient" },
   { text: "Queue", link: "/queue" },
+  { text: "Dispensing Medicine  ", link: "/medication" },
+
   { text: "Setting", link: "/setting" },
 ];
 
@@ -185,7 +188,9 @@ const Layout: FC<MyProviderProps> = ({ children }) => {
                     ) : index === 1 ? (
                       <PersonIcon />
                     ) : index === 2 ? (
-                      <QueueIcon />
+                      <PersonIcon />
+                    ) : index === 3 ? (
+                      <MedicationIcon />
                     ) : (
                       <SettingsIcon />
                     )}

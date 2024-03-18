@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Tab, Tabs, Box, Typography } from "@mui/material";
 import Patient from "./table/patient";
 import Queue from "./table/queue";
@@ -39,21 +39,21 @@ const TabPanel: React.FC<TabPanelProps> = ({ children, value, index }) => {
 const MyTabs: React.FC = () => {
   const [value, setValue] = useState<number>(0);
   const router = useRouter();
+  const [userRole, setUserRole] = useState("");
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
-  const userStr = localStorage.getItem("user");
-  let userRole = "";
-
-  if (userStr) {
-    const user = JSON.parse(userStr);
-    if (user && user.user.role) {
-      userRole = user.user.role;
+  useEffect(() => {
+    const userStr = localStorage.getItem("user");
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      if (user && user.user.role) {
+        setUserRole(user.user.role);
+      }
     }
-  }
-  console.log(userRole);
+  }, []); // ใช้วงเล็บว่างเพื่อให้ useEffect ทำงานเฉพาะครั้งแรกเมื่อคอมโพเนนต์ถูกโหลด
 
   return (
     <div>

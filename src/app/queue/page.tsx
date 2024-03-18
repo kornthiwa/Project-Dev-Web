@@ -100,7 +100,7 @@ export default function Home() {
               refetch;
             }}
             view={false}
-            dataPatient={selectedQueue.patient}
+            dataPatient={selectedQueue}
             onSave={() => setOpen(false)}
             dataDoctor={data}
           />
@@ -247,7 +247,6 @@ export default function Home() {
             placeholder="แพทย์"
             value={data || ""}
             onChange={(event) => {
-              console.log(event.target.value);
               onClickDoctor(event.target.value);
             }}
             error={!data}

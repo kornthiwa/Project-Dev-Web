@@ -9,7 +9,7 @@ import axios from "axios";
 //   },
 // });
 const axiosInstance = axios.create({
-  baseURL: "https://neckerchief-moose.cyclic.app/",
+  baseURL: "https://jolly-toad-cummerbund.cyclic.app/",
   timeout: 5000,
   headers: {
     "Content-Type": "application/json",

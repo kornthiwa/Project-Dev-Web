@@ -40,19 +40,6 @@ const Doctor: React.FC = () => {
   };
   const columns: GridColDef[] = [
     {
-      field: "no",
-      headerName: "ลำดับ ",
-      width: 100,
-      disableColumnMenu: true,
-      sortable: false,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params: any) => {
-        const { row } = params;
-        return <>{row.no}</>;
-      },
-    },
-    {
       field: "name",
       headerName: "ชื่อ ",
       width: 200,

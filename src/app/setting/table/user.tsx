@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { axiosInstance } from "@/module/axios";
 import { useQuery } from "react-query";
-import { Autocomplete, Button, Grid, TextField } from "@mui/material";
+import { Autocomplete, Button, Chip, Grid, TextField } from "@mui/material";
 import DialogAddUser from "./DialogAddUser";
 
 const User: React.FC = () => {
@@ -57,11 +57,15 @@ const User: React.FC = () => {
       width: 200,
       disableColumnMenu: true,
       sortable: false,
-      align: "left",
+      align: "center",
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.role}</>;
+        return (
+          <>
+            <Chip label={row.role} color="info" />
+          </>
+        );
       },
     },
     {
@@ -74,7 +78,11 @@ const User: React.FC = () => {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.createdAt}</>;
+        const formattedDate = new Date(row.createdAt).toLocaleDateString(
+          "th-TH",
+          { weekday: "long", year: "numeric", month: "long", day: "numeric" }
+        );
+        return <>{formattedDate}</>;
       },
     },
   ];

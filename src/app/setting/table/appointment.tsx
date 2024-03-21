@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { axiosInstance } from "@/module/axios";
 import { useQuery } from "react-query";
-import { Autocomplete, TextField } from "@mui/material";
+import { Autocomplete, Chip, TextField } from "@mui/material";
 
 const Appointment: React.FC = () => {
   const [selected, setSelected] = useState<any>(null);
@@ -21,19 +21,6 @@ const Appointment: React.FC = () => {
     },
   });
   const columns: GridColDef[] = [
-    {
-      field: "no",
-      headerName: "ลำดับ ",
-      width: 100,
-      disableColumnMenu: true,
-      sortable: false,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params: any) => {
-        const { row } = params;
-        return <>{row.no}</>;
-      },
-    },
     {
       field: "nametitle",
       headerName: "คำนำหน้า ",
@@ -122,19 +109,27 @@ const Appointment: React.FC = () => {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.appointmentDate}</>;
+        const formattedDate = new Date(row.appointmentDate).toLocaleDateString(
+          "th-TH",
+          { weekday: "long", year: "numeric", month: "long", day: "numeric" }
+        );
+        return <>{formattedDate}</>;
       },
     },
     {
       field: "status",
-      headerName: "status",
+      headerName: "Status",
       width: 200,
       disableColumnMenu: true,
       align: "center",
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.status}</>;
+        return (
+          <>
+            <Chip label={"รอ"} color="primary" />
+          </>
+        );
       },
     },
   ];

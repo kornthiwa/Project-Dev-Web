@@ -59,6 +59,12 @@ export default function Home() {
       refetch();
     }, 500);
     try {
+      const patient = await axiosInstance.patch(
+        `patient/${selectedQueue?.patient?._id}`,
+        {
+          status: "pending",
+        }
+      );
       const response = await axiosInstance.get(`queue/next/${data}`);
       setSelectedQueue(response.data);
       return response.data;
@@ -101,7 +107,16 @@ export default function Home() {
             }}
             view={false}
             dataPatient={selectedQueue}
-            onSave={() => setOpen(false)}
+            onSave={(data) => {
+              setSelectedQueue((prevQueue: any) => {
+                return {
+                  ...prevQueue,
+                  status: data,
+                };
+              });
+              setOpen(false);
+              refetch();
+            }}
             dataDoctor={data}
           />
         )}
@@ -219,7 +234,16 @@ export default function Home() {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.walking}</>;
+        switch (row.walking) {
+          case "walking":
+            return <Chip color="success" size="small" label={"เดิน"} />;
+          case "lyingDown":
+            return <Chip color="success" size="small" label={"เปลนอน"} />;
+          case "wheelchair":
+            return <Chip color="success" size="small" label={"รถเข็น"} />;
+          default:
+            return <Chip label={row.walking} color="warning" />;
+        }
       },
     },
     {
@@ -231,7 +255,17 @@ export default function Home() {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.status}</>;
+
+        switch (row.status) {
+          case "pending":
+            return <Chip label={"รอเรียกคิว"} color="warning" />;
+
+          case "queue":
+            return <Chip label={"รอเรียกคิว"} color="warning" />;
+            break;
+          default:
+            return <Chip label={row.status} color="warning" />;
+        }
       },
     },
   ];
@@ -319,21 +353,23 @@ export default function Home() {
           <Typography variant="h5">ผู้ป่วยรอรับการรักษา</Typography>
         </Box>
         <Box>
-          <DataGrid
-            rows={queue || []}
-            columns={columns}
-            getRowId={(row) => row._id}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 10 },
-              },
-            }}
-            // pageSizeOptions={[10, 20, 50]}
-            checkboxSelection={false}
-            rowSelection
-            onPaginationModelChange={(e) => console.log("Page", e)}
-            disableColumnMenu
-          />
+          {data && (
+            <DataGrid
+              rows={queue || []}
+              columns={columns}
+              getRowId={(row) => row._id}
+              initialState={{
+                pagination: {
+                  paginationModel: { page: 0, pageSize: 10 },
+                },
+              }}
+              // pageSizeOptions={[10, 20, 50]}
+              checkboxSelection={false}
+              rowSelection
+              onPaginationModelChange={(e) => console.log("Page", e)}
+              disableColumnMenu
+            />
+          )}
         </Box>
 
         {renderDialog()}

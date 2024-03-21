@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { axiosInstance } from "@/module/axios";
 import { useQuery } from "react-query";
-import { Autocomplete, TextField } from "@mui/material";
+import { Autocomplete, Chip, TextField } from "@mui/material";
 
 const Queue: React.FC = () => {
   const [selected, setSelected] = useState<any>(null);
@@ -123,7 +123,16 @@ const Queue: React.FC = () => {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.walking}</>;
+        switch (row.walking) {
+          case "walking":
+            return <Chip color="success" size="small" label={"เดิน"} />;
+          case "lyingDown":
+            return <Chip color="success" size="small" label={"เปลนอน"} />;
+          case "wheelchair":
+            return <Chip color="success" size="small" label={"รถเข็น"} />;
+          default:
+            return <Chip label={row.walking} color="warning" />;
+        }
       },
     },
     {
@@ -135,7 +144,17 @@ const Queue: React.FC = () => {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.status}</>;
+
+        switch (row.status) {
+          case "finished":
+            return <Chip label={"เรียกคิวแล้ว"} color="info" />;
+
+          case "queue":
+            return <Chip label={"รอเรียกคิว"} color="warning" />;
+            break;
+          default:
+            return <Chip label={"รอเรียกคิว"} color="warning" />;
+        }
       },
     },
   ];

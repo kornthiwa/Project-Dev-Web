@@ -247,7 +247,17 @@ export default function Home() {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.status}</>;
+
+        switch (row.status) {
+          case "pending":
+            return <Chip label={"รอส่งตัว"} color="primary" />;
+
+          case "queue":
+            return <Chip label={"รอเรียกคิว"} color="warning" />;
+            break;
+          default:
+            return <Chip label={row.status} color="warning" />;
+        }
       },
     },
     {
@@ -259,7 +269,16 @@ export default function Home() {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <Button onClick={() => onClickRowFunction(row)}>ส่งตัว</Button>;
+        const isQueue = row.status === "queue"; // เพิ่มเงื่อนไขเช็คค่า row.status
+        return (
+          <Button
+            disabled={isQueue}
+            onClick={() => onClickRowFunction(row)}
+            variant="contained"
+          >
+            ส่งตัว
+          </Button>
+        );
       },
     },
     {
@@ -296,7 +315,7 @@ export default function Home() {
           <Autocomplete
             disablePortal
             options={!isLoading && dataAPISearch ? dataAPISearch : []}
-            getOptionLabel={(option) => `${option.name} ${option.lname}`}
+            getOptionLabel={(option) => `${option.name} ${option.lastName}`}
             renderInput={(params) => (
               <TextField {...params} label="ค้นหาผู้ป่วย" />
             )}

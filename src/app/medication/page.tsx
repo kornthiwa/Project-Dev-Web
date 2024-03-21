@@ -82,19 +82,6 @@ export default function Home() {
 
   const columns: GridColDef[] = [
     {
-      field: "no",
-      headerName: "ลำดับ ",
-      width: 100,
-      disableColumnMenu: true,
-      sortable: false,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params: any) => {
-        const { row } = params;
-        return <>{row.patient.no}</>;
-      },
-    },
-    {
       field: "nametitle",
       headerName: "คำนำหน้า ",
       width: 100,
@@ -194,7 +181,16 @@ export default function Home() {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.patient.status}</>;
+
+        switch (row.status) {
+          case "success":
+            return <Chip label={"จ่ายยาแล้ว"} color="success" />;
+
+          case "successful":
+            return <Chip label={"รอจ่ายยา"} color="warning" />;
+          default:
+            return <Chip label={row.status} color="warning" />;
+        }
       },
     },
     {
@@ -210,8 +206,9 @@ export default function Home() {
           <Button
             disabled={row.status !== "successful"}
             onClick={() => onClickRowFunction(row)}
+            variant="contained"
           >
-            ส่งตัว
+            จ่ายยา
           </Button>
         );
       },
@@ -223,7 +220,8 @@ export default function Home() {
       <Box>
         <Autocomplete
           options={(!isLoading && dataSearch) || []}
-          getOptionLabel={(option) => option.name} // ระบุฟิลด์ที่ใช้เป็น label ใน Autocomplete
+          // getOptionLabel={(option) => option.name} // ระบุฟิลด์ที่ใช้เป็น label ใน Autocomplete
+          getOptionLabel={(option) => `${option.name} ${option.lastName}`}
           value={selected}
           onChange={(event, newValue) => {
             setSelected(newValue);

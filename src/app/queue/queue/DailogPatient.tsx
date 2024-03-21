@@ -28,7 +28,7 @@ import { axiosInstance } from "@/module/axios";
 interface DialogPatientProps {
   open: boolean;
   onClose: () => void;
-  onSave: () => void;
+  onSave: (data: string) => void;
   dataDoctor: any;
   view: boolean;
   dataPatient?: any;
@@ -113,7 +113,7 @@ const DialogPatient: React.FC<DialogPatientProps> = ({
     onSubmit: async (values) => {
       try {
         await addDataTemperature(values);
-        onSave();
+        onSave("isDiagnosing");
       } catch (error) {}
     },
   });

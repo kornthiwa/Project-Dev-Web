@@ -10,31 +10,45 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Autocomplete, InputLabel, MenuItem, Select } from "@mui/material";
 
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { axiosInstance } from "@/module/axios";
 
 interface DialogPatientProps {
   open: boolean;
-  onClose?: () => void;
+  onClose: () => void;
   patient?: any;
 }
 
-const postqueue = async (values: any): Promise<any> => {
-  console.log(values);
+const postqueue = async (patient: any): Promise<any> => {
+  console.log("values");
 
   try {
-    const response = await axiosInstance.post("queue", values);
-    return response.data;
+    const medical = await axiosInstance.patch(`medical/${patient._id}`, {
+      status: "success",
+    });
+
+    return medical.data;
   } catch (error) {
     throw error;
   }
 };
+
 const DialogPatientTransfer: React.FC<DialogPatientProps> = ({
   open,
   onClose,
   patient,
 }) => {
-  const { data, isLoading, isError } = useQuery("doctors");
+  const queryClient = useQueryClient();
+
+  const { mutate: medical } = useMutation<any, any, any>(
+    (data: any) => postqueue(patient),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["medical"]);
+        onClose();
+      },
+    }
+  );
 
   return (
     <React.Fragment>
@@ -59,7 +73,7 @@ const DialogPatientTransfer: React.FC<DialogPatientProps> = ({
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose}>ยกเลิก</Button>
-          <Button type="submit">ยืนยัน</Button>
+          <Button onClick={() => medical(patient)}>ยืนยัน</Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>

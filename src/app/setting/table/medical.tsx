@@ -22,19 +22,6 @@ const Medical: React.FC = () => {
   });
   const columns: GridColDef[] = [
     {
-      field: "no",
-      headerName: "ลำดับ ",
-      width: 100,
-      disableColumnMenu: true,
-      sortable: false,
-      align: "center",
-      headerAlign: "center",
-      renderCell: (params: any) => {
-        const { row } = params;
-        return <>{row.no}</>;
-      },
-    },
-    {
       field: "nametitle",
       headerName: "คำนำหน้า ",
       width: 100,

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { axiosInstance } from "@/module/axios";
 import { useQuery } from "react-query";
-import { Autocomplete, TextField } from "@mui/material";
+import { Autocomplete, Chip, TextField } from "@mui/material";
 
 const Patient: React.FC = () => {
   const [selected, setSelected] = useState<any>(null);
@@ -134,7 +134,17 @@ const Patient: React.FC = () => {
       headerAlign: "center",
       renderCell: (params: any) => {
         const { row } = params;
-        return <>{row.status}</>;
+
+        switch (row.status) {
+          case "pending":
+            return <Chip label={"รอส่งตัว"} color="primary" />;
+
+          case "queue":
+            return <Chip label={"รอเรียกคิว"} color="warning" />;
+            break;
+          default:
+            return <Chip label={row.status} color="warning" />;
+        }
       },
     },
   ];

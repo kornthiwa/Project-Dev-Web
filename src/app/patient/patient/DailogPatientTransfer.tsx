@@ -10,7 +10,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { Autocomplete, InputLabel, MenuItem, Select } from "@mui/material";
 
-import { useMutation, useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { axiosInstance } from "@/module/axios";
 
 interface DialogPatientProps {
@@ -41,6 +41,9 @@ const postqueue = async (values: any): Promise<any> => {
   console.log(values);
 
   try {
+    const patient = await axiosInstance.patch(`patient/${values.patient}`, {
+      status: "queue",
+    });
     const response = await axiosInstance.post("queue", values);
     return response.data;
   } catch (error) {
@@ -52,6 +55,8 @@ const DialogPatientTransfer: React.FC<DialogPatientProps> = ({
   onClose,
   patient,
 }) => {
+  const queryClient = useQueryClient();
+
   const {
     data: doctors = [],
     isLoading,
@@ -63,6 +68,7 @@ const DialogPatientTransfer: React.FC<DialogPatientProps> = ({
     {
       onSuccess: () => {
         // queryClient.invalidateQueries(["patients"]);
+        queryClient.invalidateQueries(["patients"]);
       },
     }
   );
@@ -140,7 +146,7 @@ const DialogPatientTransfer: React.FC<DialogPatientProps> = ({
               error={formik.touched.walking && Boolean(formik.errors.walking)}
             >
               <MenuItem value="walking">เดิน</MenuItem>
-              <MenuItem value="lyingDown">นอน</MenuItem>
+              <MenuItem value="lyingDown">เปลนอน</MenuItem>
               <MenuItem value="wheelchair">รถเข็น</MenuItem>
             </Select>
             <InputLabel id="clinic" sx={{ marginBottom: "8px" }}>

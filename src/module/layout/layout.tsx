@@ -30,12 +30,12 @@ interface MyProviderProps {
 }
 const drawerWidth = 240;
 const listData = [
-  { text: "Home", link: "/" },
-  { text: "Patient", link: "/patient" },
-  { text: "Queue", link: "/queue" },
-  { text: "Dispensing Medicine  ", link: "/medication" },
+  { text: "หน้าแรก", link: "/" },
+  { text: "ข้อมูลผู้ป่วย", link: "/patient" },
+  { text: "การเรียกคิว", link: "/queue" },
+  { text: "จัดการข้อมูลยา", link: "/medication" },
 
-  { text: "Setting", link: "/setting" },
+  { text: "จัดการข้อมูล", link: "/setting" },
 ];
 
 const openedMixin = (theme: Theme): CSSObject => ({

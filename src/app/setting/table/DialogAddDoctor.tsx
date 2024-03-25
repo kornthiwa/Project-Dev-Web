@@ -20,6 +20,7 @@ interface DialogPatientProps {
 
 const validationSchema = yup.object().shape({
   name: yup.string().required("กรุณากรอกชื่อแพทย์"),
+  lastName: yup.string().required("กรุณากรอกสกุลแพทย์"),
   position: yup.string().required("กรุณาระบุตำแหน่งของแพทย์"),
   education: yup.string().required("กรุณาระบุวุฒิการศึกษาของแพทย์"),
   phoneNumber: yup.string().required("กรุณาระบุเบอร์โทรศัพท์ของแพทย์"),
@@ -55,6 +56,7 @@ const DialogAddDoctor: React.FC<DialogPatientProps> = ({ open, onClose }) => {
   const formik = useFormik({
     initialValues: {
       name: "",
+      lastName: "",
       position: "",
       education: "",
       experience: "", // สามารถกำหนดค่าให้ตามต้องการ
@@ -78,7 +80,7 @@ const DialogAddDoctor: React.FC<DialogPatientProps> = ({ open, onClose }) => {
           <DialogContent>
             <DialogContentText></DialogContentText>
             <InputLabel id="name" sx={{ marginBottom: "8px" }}>
-              ชื่อ - สกุล
+              ชื่อ
             </InputLabel>
             <TextField
               autoFocus
@@ -91,6 +93,21 @@ const DialogAddDoctor: React.FC<DialogPatientProps> = ({ open, onClose }) => {
               onChange={formik.handleChange}
               error={formik.touched.name && Boolean(formik.errors.name)}
               helperText={formik.touched.name && formik.errors.name}
+            />{" "}
+            <InputLabel id="name" sx={{ marginBottom: "8px" }}>
+              สกุล
+            </InputLabel>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="lastName"
+              name="lastName"
+              type="text"
+              fullWidth
+              value={formik.values.lastName}
+              onChange={formik.handleChange}
+              error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+              helperText={formik.touched.lastName && formik.errors.lastName}
             />
             <InputLabel id="phoneNumber" sx={{ marginBottom: "8px" }}>
               เบอร์โทร

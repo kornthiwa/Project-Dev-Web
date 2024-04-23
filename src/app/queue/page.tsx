@@ -89,9 +89,6 @@ export default function Home() {
       setData(id);
       setIsDiagnosing(false);
     }
-    // setTimeout(() => {
-    //   refetch();
-    // }, 500);
   };
 
   const renderDialog = () => {

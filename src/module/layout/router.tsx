@@ -12,13 +12,13 @@ export default function MyRouter({
   const pathname = usePathname();
   const router = useRouter();
 
-  useEffect(() => {
-    // เมื่อหน้า login โหลดครั้งแรก ตรวจสอบว่ามีข้อมูลผู้ใช้ใน local storage หรือไม่
-    const userStr = localStorage.getItem("user");
-    if (!userStr) {
-      router.push("/login");
-    }
-  }, [router]);
+  // useEffect(() => {
+  //   // เมื่อหน้า login โหลดครั้งแรก ตรวจสอบว่ามีข้อมูลผู้ใช้ใน local storage หรือไม่
+  //   const userStr = localStorage.getItem("user");
+  //   if (!userStr) {
+  //     router.push("/login");
+  //   }
+  // }, [router]);
 
   console.log(pathname);
 
